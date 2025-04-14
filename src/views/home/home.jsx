@@ -1,6 +1,17 @@
 import Header  from "../../components/navbar/header";
 import Footer from "../../components/navbar/footer";
+import CardList from "../../components/productCard/cardList";
+import { useEffect, useState } from "react";
+import axios from "axios";
 export default function SushiPage() {
+  const [product, setProduct] = useState([])
+
+  useEffect(()=>{
+      axios.get('http://127.0.0.1:8000/api/menu')
+      .then (res => setProduct(res.data))
+      .catch(err => console.log(err)
+      )
+  },[])
   return (
     <div className="min-h-screen bg-[#FFF9F0]">
       {/* Navigation */}
@@ -57,58 +68,7 @@ export default function SushiPage() {
     <div className="w-24 h-1 bg-[#9E7676] mx-auto mt-4"></div>
   </div>
 
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 container mx-auto">
-    {[
-      {
-        name: "Nigiri của bếp trưởng",
-        jpName: "Takumi Nigiri",
-        price: "¥3,800",
-        image:
-          "https://i.pinimg.com/736x/9c/de/4e/9cde4eb07837e1b117cc00b0c76ed27b.jpg",
-      },
-      {
-        name: "Tổng hợp theo mùa",
-        jpName: "Seasonal Assortment",
-        price: "¥4,500",
-        image:
-          "https://i.pinimg.com/736x/5c/ec/1a/5cec1a4a32a4e47934c410d5262878d8.jpg",
-      },
-      {
-        name: "Cơm hải sản cao cấp",
-        jpName: "Premium Seafood Bowl",
-        price: "¥3,200",
-        image:
-          "https://i.pinimg.com/736x/78/ab/8a/78ab8a3e46b43a0731e15b805d9ef2b6.jpg",
-      },
-    ].map((item, index) => (
-      <div
-        key={index}
-        className="overflow-hidden bg-white border-none shadow-md hover:shadow-lg transition-shadow rounded-lg"
-      >
-        <div className="h-64 w-full relative">
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-full h-full object-cover object-center"
-          />
-        </div>
-        <div className="p-6">
-          <h3 className="text-xl font-semibold text-[#594545]">
-            {item.name}
-          </h3>
-          <p className="text-[#9E7676] mb-4">{item.jpName}</p>
-          <div className="flex justify-between items-center">
-            <span className="text-lg font-bold text-[#815B5B]">
-              {item.price}
-            </span>
-            <button className="bg-[#9E7676] hover:bg-[#815B5B] text-white px-3 py-1 text-sm rounded-md">
-              Đặt món
-            </button>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
+<CardList items={product}/>
 </section>
 
 

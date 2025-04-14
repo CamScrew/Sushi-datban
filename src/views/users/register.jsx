@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function RegisterPage() {
   const [data, setData] = useState({
     name: "",
-    // phone: "",
+    phone: "",
     email: "",
     password: "",
   });
@@ -32,16 +32,16 @@ export default function RegisterPage() {
     if (!data.name) {
       newErr.name = "tên không được để trống";
     }
-    // if (!data.phone) {
-    //   newErr.phone = "số điện thoại không được để trống";
-    // } else if (data.phone.length < 10) {
-    //   newErr.phone = "số điện thoại có ít nhất 10 ký tự";
-    // }
-    if(!agreeTerms){
-        newErr.agreeTerms ="Bạn cần đồng ý với điều khoản dịch vụ"
+    if (!data.phone) {
+      newErr.phone = "số điện thoại không được để trống";
+    } else if (data.phone.length < 10) {
+      newErr.phone = "số điện thoại có ít nhất 10 ký tự";
     }
-    if(!subscribe){
-        newErr.subscribe ="Bạn cần đồng ý nhận thông tin về ưu đãi qua email"
+    if (!agreeTerms) {
+      newErr.agreeTerms = "Bạn cần đồng ý với điều khoản dịch vụ";
+    }
+    if (!subscribe) {
+      newErr.subscribe = "Bạn cần đồng ý nhận thông tin về ưu đãi qua email";
     }
     setErrors(newErr);
     return Object.keys(newErr).length === 0;
@@ -50,12 +50,12 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!validate()) return;
     console.log(data);
-      axios
-        .post("http://127.0.0.1:8000/api/register", data)
-        .then((res) => {
-          navigate('/login')
-        })
-        .catch((e) => console.log(`lỗi ${e}`));
+    axios
+      .post("http://127.0.0.1:8000/api/register", data)
+      .then((res) => {
+        navigate("/login");
+      })
+      .catch((e) => console.log(`lỗi ${e}`));
   };
   return (
     <div className="min-h-screen bg-[#FFF9F0]">
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                 {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
               </div>
 
-              {/* <div className="mb-6">
+              <div className="mb-6">
                 <label
                   htmlFor="phone"
                   className="block text-sm font-medium text-[#594545] mb-1"
@@ -124,7 +124,7 @@ export default function RegisterPage() {
                   onChange={(e) => setData({ ...data, phone: e.target.value })}
                 />
                 {errors.phone && <p style={{ color: "red" }}>{errors.phone}</p>}
-              </div> */}
+              </div>
 
               <div className="mb-6">
                 <label
@@ -177,7 +177,7 @@ export default function RegisterPage() {
                     type="checkbox"
                     className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
                     checked={agreeTerms}
-                    onChange={e => setAgreeTerms(e.target.checked)}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -197,7 +197,9 @@ export default function RegisterPage() {
                       Chính sách bảo mật
                     </a>
                   </label>
-                  {errors.agreeTerms && <p style={{ color: "red" }}>{errors.agreeTerms}</p>}
+                  {errors.agreeTerms && (
+                    <p style={{ color: "red" }}>{errors.agreeTerms}</p>
+                  )}
                 </div>
               </div>
 
@@ -208,7 +210,7 @@ export default function RegisterPage() {
                     type="checkbox"
                     className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
                     checked={subscribe}
-                    onChange={e => setSubscribe(e.target.checked)}
+                    onChange={(e) => setSubscribe(e.target.checked)}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -216,7 +218,9 @@ export default function RegisterPage() {
                     Tôi muốn nhận thông tin về ưu đãi và sự kiện đặc biệt qua
                     email
                   </label>
-                  {errors.subscribe && <p style={{ color: "red" }}>{errors.subscribe}</p>}
+                  {errors.subscribe && (
+                    <p style={{ color: "red" }}>{errors.subscribe}</p>
+                  )}
                 </div>
               </div>
 
@@ -242,8 +246,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </section>
-
-
 
       {/* Benefits Section */}
       <section className="py-8 px-4 bg-[#FFF3E4]">

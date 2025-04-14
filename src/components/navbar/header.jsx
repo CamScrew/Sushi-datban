@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { AuthContext } from '../../context/authContext'
 export default function header() {
   const {user,logout} = useContext(AuthContext)
-
+  
   return (
     <nav className="bg-[#FFF9F0] border-b border-[#E8D5C4] px-4 py-3">
     <div className="container mx-auto flex justify-between items-center">
@@ -28,7 +28,7 @@ export default function header() {
       </div>
       {user ? (
           <div className="flex items-center space-x-4">
-            <span className="text-[#594545]">👋 Xin chào, {user.name}</span>
+            <a href="/user"><span className="text-[#594545]">👋 Xin chào, {user[0].name}</span></a>
             <button
               onClick={logout}
               className="bg-[#9E7676] hover:bg-[#B04242] text-white px-4 py-2 rounded-md"
@@ -42,7 +42,7 @@ export default function header() {
             <a href="/login">Đăng nhập</a>
           </button>
             <button className="bg-[#9E7676] hover:bg-[#815B5B] text-white px-4 py-2 rounded-md">
-            <a href="/login">Đăng ký</a>
+            <a href="/register">Đăng ký</a>
           </button>
           </div>
         )}

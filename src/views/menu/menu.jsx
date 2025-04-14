@@ -1,8 +1,16 @@
 import Header from "../../components/navbar/header";
 import Footer from "../../components/navbar/footer";
-import Card from "../../components/productCard/card";
+import CardList  from "../../components/productCard/cardList";
+import axios from "axios";
+import { use, useEffect, useState } from "react";
 
 export default function MenuPage() {
+  const [product,setProduct] = useState([])
+    useEffect(()=>{
+        axios.get("http://127.0.0.1:8000/api/menu")
+        .then(res => (setProduct(res.data)))
+        .catch(e => console.log(e)) 
+    },[])
   return (
     <div className="min-h-screen bg-[#FFF9F0]">
       {/* Navigation */}
@@ -82,7 +90,7 @@ export default function MenuPage() {
             Những món ăn đặc biệt được chế biến từ nguyên liệu theo mùa
           </p>
 
-          <Card/>
+          <CardList items={product} />
         </div>
       </section>
 
@@ -482,7 +490,7 @@ export default function MenuPage() {
           <p className="text-[#9E7676] text-center mb-12">
             Các loại roll truyền thống và hiện đại
           </p>
-          <Card />
+          <CardList items={product}List />
         </div>
       </section>
 
