@@ -2,9 +2,13 @@ import Header from "../../components/navbar/header";
 import Footer from "../../components/navbar/footer";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom'
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+  console.log(email);
+  
   const validate = () => {
     const newErr = {};
     if (!email) {
@@ -19,8 +23,8 @@ export default function ForgotPasswordPage() {
     e.preventDefault();
     if (!validate()) return;
     axios
-      .post("http://127.0.0.1:8000/api/", email)
-      .then((res) => alert("vui lòng kiểm tra email"))
+      .post("http://127.0.0.1:8000/api/forgot-password",{email})
+      .then((res) => alert("vui lòng check mail"))
       .catch((e) => `lỗi ${e}`);
   };
   return (

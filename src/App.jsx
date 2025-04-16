@@ -31,6 +31,7 @@ function App() {
       <Route path="/admin-reservation" element={<AdminReservation />} />
       <Route path="/admin-menu" element={<MenuAdminPage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
+      <Route path="/google/callback" element={<Home />} />
       </Routes>
   );
 }

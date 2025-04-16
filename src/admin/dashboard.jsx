@@ -148,7 +148,7 @@ export default function AdminDashboard() {
                       {reservations.map((reservation) => (
                         <tr key={reservation.id} className="hover:bg-[#FFF9F0]">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#594545] text-center">
-                            RES-{reservation.id}
+                            ORD-{reservation.id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#594545] text-center">
                             {reservation.name}

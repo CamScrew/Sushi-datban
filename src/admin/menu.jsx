@@ -1,91 +1,67 @@
 import Sidebar from "../components/admin/sidebar";
 import Navbar from "../components/admin/navbar";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef  } from "react";
+import axios from "axios";
 export default function MenuAdminPage() {
-  // Mock menu data
-  const menuItems = [
-    {
-      id: "ITEM-001",
-      name: "Nigiri Cá hồi",
-      jpName: "サーモン握り",
-      category: "Sushi",
-      price: "70.000 ₫",
-      cost: "45.000 ₫",
-      description: "Cá hồi tươi trên cơm sushi",
-      image: "https://placehold.co/100x100/png?text=Salmon+Nigiri",
-      status: "Có sẵn",
-      statusColor: "bg-green-100 text-green-800",
-      featured: true,
-      popular: true,
-    },
-    {
-      id: "ITEM-002",
-      name: "Nigiri Cá ngừ",
-      jpName: "鮪握り",
-      category: "Sushi",
-      price: "80.000 ₫",
-      cost: "50.000 ₫",
-      description: "Cá ngừ tươi trên cơm sushi",
-      image: "https://placehold.co/100x100/png?text=Tuna+Nigiri",
-      status: "Có sẵn",
-      statusColor: "bg-green-100 text-green-800",
-      featured: false,
-      popular: true,
-    },
-    {
-      id: "ITEM-003",
-      name: "California Roll",
-      jpName: "カ",
-      category: "Rolls",
-      price: "180.000 ₫",
-      cost: "110.000 ₫",
-      description: "Cua, bơ, dưa chuột, trứng cá chuồn",
-      image: "https://placehold.co/100x100/png?text=California+Roll",
-      status: "Có sẵn",
-      statusColor: "bg-green-100 text-green-800",
-      featured: true,
-      popular: true,
-    },
-  ];
-
-  // Mock categories
-  const categories = [
-    { id: 1, name: "Sushi", count: 3 },
-    { id: 2, name: "Sashimi", count: 2 },
-    { id: 3, name: "Rolls", count: 3 },
-    { id: 4, name: "Khai vị", count: 3 },
-    { id: 5, name: "Mì & Cơm", count: 2 },
-    { id: 6, name: "Đồ uống", count: 2 },
-  ];
-  const [active, setActive] = useState(1); 
-  // const [stats,setStats] = useState([]);
-  // const [menu,setMenu] = useState([]);
-  // const [category,setCategory] = useState([]);
-  // useEffect(()=>{
-  //   const fetData = async () =>{
-  //     try{
-  //       const [listStats,listMenu,listCategory] = await Promise.all([
-  //         axios.get(""),
-  //         axios.get(""),
-  //         axios.get("")
-  //       ])
-  //       setStats(listStats.data)
-  //       setMenu(listMenu.data)
-  //       setCategory(listCategory.data)
-  //     }catch(err){
-  //       console.log(err);
-
-  //     }
-  //   }
-  //   fetData();
-  // },[])
-  const handleActive = () =>{
-    setActive(null); 
-  }
-  const handleNulll = () =>{
-    setActive(1); 
-  }
-  
+  const [active, setActive] = useState(1);
+  const [stats, setStats] = useState([]);
+  const [menu, setMenu] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [data, setData] = useState({
+    name: "",
+    tag: "",
+    category_id: "",
+    description: "",
+    status: "available",
+    price: "",
+    // costPrice: "",
+    image: null,
+  });
+  const fileInputRef = useRef(null);
+  useEffect(() => {
+    const fetData = async () => {
+      try {
+        const [listStats, listMenu, listCategory] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/api/stat-menu"),
+          axios.get("http://127.0.0.1:8000/api/menu"),
+          axios.get("http://127.0.0.1:8000/api/category"),
+        ]);
+        setStats(listStats.data);
+        setMenu(listMenu.data);
+        setCategories(listCategory.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetData();
+  }, []);
+  const handleActive = () => {
+    setActive(null);
+  };
+  const handleNulll = () => {
+    setActive(1);
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(data);
+    
+    axios.post("http://127.0.0.1:8000/api/insert-menu",data)
+    .then(res => {
+      console.log(data);
+      
+    }
+    )
+    .catch(e => console.log(e) 
+    )
+  };
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.size <= 2 * 1024 * 1024) {
+      setData({ ...data, image: file });
+    } else {
+      alert("Vui lòng chọn ảnh dưới 2MB.");
+    }
+  };
   return (
     <div className="min-h-screen bg-[#FFF9F0] flex">
       {/* Sidebar */}
@@ -110,7 +86,10 @@ export default function MenuAdminPage() {
           <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex flex-wrap gap-2">
-                <button onClick={handleActive} className="flex items-center bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 px-4 rounded-md transition-colors">
+                <button
+                  onClick={handleActive}
+                  className="flex items-center bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 px-4 rounded-md transition-colors"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2"
@@ -281,14 +260,14 @@ export default function MenuAdminPage() {
             </h2>
             <div className="flex flex-wrap gap-3">
               <button className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
-                Tất cả ({menuItems.length})
+                Tất cả ({stats})
               </button>
               {categories.map((category) => (
                 <button
                   key={category.id}
                   className="px-4 py-2 bg-[#FFF9F0] text-[#594545] rounded-md hover:bg-[#FFF3E4] transition-colors"
                 >
-                  {category.name} ({category.count})
+                  {category.name}
                 </button>
               ))}
             </div>
@@ -359,7 +338,7 @@ export default function MenuAdminPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-[#E8D5C4]">
-                  {menuItems.map((item) => (
+                  {menu.map((item) => (
                     <tr key={item.id} className="hover:bg-[#FFF9F0]">
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center space-x-3">
@@ -746,13 +725,20 @@ export default function MenuAdminPage() {
           </div>
 
           {/* Add New Menu Item Modal (Hidden by default) */}
-          <div className={`${active === 1 ?'hidden':""} fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center`}>
+          <div
+            className={`${
+              active === 1 ? "hidden" : ""
+            } fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center`}
+          >
             <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
               <div className="px-6 py-4 border-b border-[#E8D5C4] flex justify-between items-center sticky top-0 bg-white z-10">
                 <h2 className="text-lg font-semibold text-[#594545]">
                   Thêm món mới
                 </h2>
-                <button onClick={handleNulll} className="text-[#594545] hover:text-[#815B5B]">
+                <button
+                  onClick={handleNulll}
+                  className="text-[#594545] hover:text-[#815B5B]"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -770,152 +756,187 @@ export default function MenuAdminPage() {
                 </button>
               </div>
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                  <div className="md:col-span-1">
-                    <div className="bg-[#FFF9F0] p-4 rounded-md flex flex-col items-center">
-                      <div className="w-full h-64 border-2 border-dashed border-[#E8D5C4] rounded-md flex items-center justify-center mb-4">
-                        <div className="text-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="mx-auto h-12 w-12 text-[#9E7676]"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    {/* Khu vực ảnh */}
+                    <div className="md:col-span-1">
+                      <div className="bg-[#FFF9F0] p-4 rounded-md flex flex-col items-center">
+                        <div className="w-full h-64 border-2 border-dashed border-[#E8D5C4] rounded-md flex items-center justify-center mb-4">
+                          <div className="text-center">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="mx-auto h-12 w-12 text-[#9E7676]"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <p className="mt-1 text-sm text-[#815B5B]">
+                              Tải ảnh lên
+                            </p>
+                            <p className="mt-1 text-xs text-[#9E7676]">
+                              PNG, JPG (Max. 2MB)
+                            </p>
+                          </div>
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          className="hidden"
+                          ref={fileInputRef}
+                          onChange={handleFileUpload}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current.click()}
+                          className="w-full bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 rounded-md transition-colors text-sm"
+                        >
+                          Chọn ảnh
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Khu vực nhập liệu */}
+                    <div className="md:col-span-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Tên món */}
+                        <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Tên món (Tiếng Việt) *
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Nhập tên món ăn"
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.name}
+                            onChange={(e) =>
+                              setData({ ...data, name: e.target.value })
+                            }
+                          />
+                        </div>
+
+                        {/* Nhãn món */}
+                        <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Nhãn món ăn
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Nhãn món ăn"
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.tag}
+                            onChange={(e) =>
+                              setData({ ...data, tag: e.target.value })
+                            }
+                          />
+                        </div>
+
+                        {/* Danh mục */}
+                        <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Danh mục *
+                          </label>
+                          <select
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.category_id}
+                            onChange={(e) =>
+                              setData({ ...data, category_id: e.target.value })
+                            }
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <p className="mt-1 text-sm text-[#815B5B]">
-                            Tải ảnh lên
-                          </p>
-                          <p className="mt-1 text-xs text-[#9E7676]">
-                            PNG, JPG (Max. 2MB)
-                          </p>
+                            <option value="">-- Chọn danh mục --</option>
+                            {categories.map((item) => (                              
+                              <option value={item.id} key={item.id}>
+                                {item.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Trạng thái */}
+                        <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Trạng thái *
+                          </label>
+                          <select
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.status}
+                            onChange={(e) =>
+                              setData({ ...data, status: e.target.value })
+                            }
+                          >
+                            <option value="available">Có sẵn</option>
+                            <option value="unavailable">Hết hàng</option>
+                            <option value="suspended">Tạm ngưng</option>
+                          </select>
+                        </div>
+
+                        {/* Giá bán */}
+                        <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Giá bán *
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="VD: 70.000 ₫"
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.price}
+                            onChange={(e) =>
+                              setData({ ...data, price: e.target.value })
+                            }
+                          />
+                        </div>
+
+                        {/* Giá vốn */}
+                        {/* <div>
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Giá vốn
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="VD: 45.000 ₫"
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.costPrice}
+                            onChange={(e) =>
+                              setData({ ...data, costPrice: e.target.value })
+                            }
+                          />
+                        </div> */}
+
+                        {/* Mô tả */}
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-[#594545] mb-1">
+                            Mô tả
+                          </label>
+                          <textarea
+                            placeholder="Nhập mô tả món ăn"
+                            rows={3}
+                            className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                            value={data.description}
+                            onChange={(e) =>
+                              setData({ ...data, description: e.target.value })
+                            }
+                          ></textarea>
                         </div>
                       </div>
-                      <button className="w-full bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 rounded-md transition-colors text-sm">
-                        Chọn ảnh
-                      </button>
                     </div>
                   </div>
-                  <div className="md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Tên món (Tiếng Việt) *
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Nhập tên món ăn"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Tên món (Tiếng Nhật)
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Nhập tên tiếng Nhật (nếu có)"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Danh mục *
-                        </label>
-                        <select className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]">
-                          <option value="">Chọn danh mục</option>
-                          <option value="sushi">Sushi</option>
-                          <option value="sashimi">Sashimi</option>
-                          <option value="rolls">Rolls</option>
-                          <option value="appetizers">Khai vị</option>
-                          <option value="rice-noodles">Mì & Cơm</option>
-                          <option value="drinks">Đồ uống</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Trạng thái *
-                        </label>
-                        <select className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]">
-                          <option value="available">Có sẵn</option>
-                          <option value="unavailable">Hết hàng</option>
-                          <option value="suspended">Tạm ngưng</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Giá bán *
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="VD: 70.000 ₫"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Giá vốn
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="VD: 45.000 ₫"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Mô tả
-                        </label>
-                        <textarea
-                          placeholder="Nhập mô tả món ăn"
-                          rows={3}
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        ></textarea>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="newFeatured"
-                          className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
-                        />
-                        <label
-                          htmlFor="newFeatured"
-                          className="ml-2 text-sm text-[#594545]"
-                        >
-                          Món nổi bật
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="newPopular"
-                          className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
-                        />
-                        <label
-                          htmlFor="newPopular"
-                          className="ml-2 text-sm text-[#594545]"
-                        >
-                          Món phổ biến
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="flex justify-end space-x-3">
-                  <button className="px-4 py-2 border border-[#9E7676] text-[#9E7676] rounded-md hover:bg-[#FFF3E4] transition-colors">
-                    Hủy
-                  </button>
-                  <button className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
-                    Thêm món
-                  </button>
-                </div>
+                  {/* Nút submit */}
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors"
+                    >
+                      Thêm món
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

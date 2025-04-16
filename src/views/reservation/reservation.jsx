@@ -22,11 +22,10 @@ export default function ReservationPage() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(data);
     axios
       .post("http://127.0.0.1:8000/api/reservation", data)
       .then((res) => {
-        // navigate("/");
+        navigate("/");
       })
       .catch((e) => `Lỗi ${e}`);
   };
@@ -41,12 +40,10 @@ export default function ReservationPage() {
         })
         .then((res) => {
           setRecomendTable(res.data);
-          console.log(res.data);
         })
         .catch((err) => console.log(err));
     }
   }, [data.guests, data.reservation_date]);
-  console.log(recomendTable.available_times);
 
   return (
     <div className="min-h-screen bg-[#FFF9F0]">
@@ -184,7 +181,6 @@ export default function ReservationPage() {
                   >
                     {recomendTable.available_times ? (
                       recomendTable.available_times.map((items,index) => {
-                        console.log(items);
                        return <option key={index} value={items}>{items}</option>;
                       })
                     ) : (

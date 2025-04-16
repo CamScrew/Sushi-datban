@@ -1,16 +1,21 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { useSearchParams } from "react-router-dom";
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
   const [comfirmPass, setComfirmPass] = useState("");
   const [errors, setErrors] = useState({});
+  const [searchParams] = useSearchParams();
+  const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
+
   useEffect(()=>{
-    axios.get("http://127.0.0.1:8000/api/")
-    .then(res => setOldPassword(res.data) )
-    .catch(e => e)
-  },[])
+    const tokenUrl = searchParams.get("token");
+    const emailUrl = searchParams.get("email")
+    setToken(tokenUrl);
+    setEmail(emailUrl)
+  },[searchParams])
+  // 
   const validate = () => {
     const newErr = {};
     if (!password) {
@@ -23,9 +28,6 @@ export default function ResetPasswordPage() {
     } else if(password !== comfirmPass) {
         newErr.cfpass = "Mật khẩu không khớp";
       }
-    if(!Oldpassword){
-        newErr.Oldpassword = " không được để trống";
-    }
       setErrors(newErr);
     return Object.keys(newErr).length === 0;
   };
@@ -34,7 +36,10 @@ export default function ResetPasswordPage() {
     if(!validate()) return
     console.log(password);
     
-    axios.patch("http://127.0.0.1:8000/api/",password)
+    axios.post("http://127.0.0.1:8000/api/reset-password",{
+      password,
+      token
+    })
     .then(res => alert("done"))
     .catch(e => `lỗi ${e}`)
   }
@@ -79,24 +84,6 @@ export default function ResetPasswordPage() {
             </div>
 
             <form onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-[#594545] mb-1"
-                >
-                  Mật khẩu cũ
-                </label>
-                <input
-                  type="text"
-                  id="old-password"
-                  className="w-full px-4 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-2 focus:ring-[#9E7676]"
-                  placeholder="vui lòng nhập mật khẩu cũ"
-                  onChange={(e) => setOldPassword(e.target.value)}
-                />
-                {errors.Oldpassword && (
-                  <p style={{ color: "red" }}>{errors.Oldpassword}</p>
-                )}
-              </div>
               <div className="mb-6">
                 <label
                   htmlFor="password"

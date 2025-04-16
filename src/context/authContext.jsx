@@ -9,22 +9,32 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const token = localStorage.getItem('auth') 
-    if (token) {
-      axios.get('http://127.0.0.1:8000/api/user', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then(res => setUser(res.data))
-      .catch(() => {
-        localStorage.removeItem('auth')
-        setUser(null)
-      })
-      .finally(() => setLoading(false))
-    } else {
-      setLoading(false)
+    useEffect(() => {
+      const query = new URLSearchParams(window.location.search);
+      const urlToken = query.get("token");
+
+    // Nếu vừa đăng nhập bằng Google thành công thì lưu token mới
+    if (urlToken) {
+      localStorage.setItem("auth", urlToken);
+      // Xoá token khỏi URL cho gọn
+      window.history.replaceState(null, null, window.location.pathname);
     }
-  }, [])
+
+    const token = urlToken || localStorage.getItem("auth");
+      if (token) {
+        axios.get('http://127.0.0.1:8000/api/user', {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(res => setUser(res.data))
+        .catch(() => {
+          localStorage.removeItem('auth')
+          setUser(null)
+        })
+        .finally(() => setLoading(false))
+      } else {
+        setLoading(false)
+      }
+    }, [])
 
   const login = (token) => {
     localStorage.setItem("auth",token) 
