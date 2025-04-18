@@ -6,15 +6,8 @@ import { AuthContext } from '../../context/authContext'
 export default function User() {
   // Mock user data
   const {user,logout} = useContext(AuthContext);
-  let customer = {}
-  if(user && user.length  >0){
-     customer = user[0]   
-  } else{
-    console.log("ko có dữ liệu");
-    
-  }
-
-
+  console.log(user);
+  
   const loyalty = {
     currentRank: "Bạc",
     points: 2450,
@@ -47,30 +40,30 @@ export default function User() {
               <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="flex flex-col items-center mb-6">
                   <img
-                    src={customer.image || "https://cdn.tuoitre.vn/thumb_w/640/471584752817336320/2023/2/10/tieu-su-justin-bieber-3678-167601620270457998666.jpg"}
+                    src={user.image || "https://cdn.tuoitre.vn/thumb_w/640/471584752817336320/2023/2/10/tieu-su-justin-bieber-3678-167601620270457998666.jpg"}
                     alt='yes'
                     className="w-24 h-24 rounded-full border-4 border-[#E8D5C4] mb-4"
                   />
-                  <h2 className="text-xl font-semibold text-[#594545]">{customer.name}</h2>
+                  <h2 className="text-xl font-semibold text-[#594545]">{user.name}</h2>
                   <p className="text-[#9E7676]">Thành viên {loyalty.currentRank }</p>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm font-medium text-[#815B5B]">Email</h3>
-                    <p className="text-[#594545]">{customer.email}</p>
+                    <p className="text-[#594545]">{user.email}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-[#815B5B]">Số điện thoại</h3>
-                    <p className="text-[#594545]">{customer.phone}</p>
+                    <p className="text-[#594545]">{user.phone}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-[#815B5B]">Địa chỉ</h3>
-                    <p className="text-[#594545]">{customer.address || "không có"}</p>
+                    <p className="text-[#594545]">{user.address || "không có"}</p>
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-[#815B5B]">Ngày tham gia</h3>
-                    <p className="text-[#594545]">{dayjs(customer.created_at).format("DD/MM/YYYY")}</p>
+                    <p className="text-[#594545]">{dayjs(user.created_at).format("DD/MM/YYYY")}</p>
                   </div>
                 </div>
 
@@ -246,7 +239,7 @@ export default function User() {
                   </div>
                   <div className="bg-[#FFF3E4] p-4 rounded-lg text-center">
                     <h3 className="text-[#594545] font-medium mb-1">Thành viên từ</h3>
-                    <p className="text-2xl font-bold text-[#9E7676]">{dayjs(customer.created_at).format("DD/MM/YYYY")}</p>
+                    <p className="text-2xl font-bold text-[#9E7676]">{dayjs(user.created_at).format("DD/MM/YYYY")}</p>
                   </div>
                 </div>
 
@@ -329,7 +322,6 @@ export default function User() {
                     </button>
                   </div>
                 </div>
-
                 <div className="mt-4 text-center">
                   <a href="#" className="text-[#9E7676] hover:text-[#815B5B] text-sm font-medium">
                     Xem tất cả ưu đãi
@@ -344,4 +336,4 @@ export default function User() {
       {/* Footer */}
     </div>
   )
-}
+} 

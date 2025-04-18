@@ -1,12 +1,15 @@
 import Sidebar from "../components/admin/sidebar";
 import Navbar from "../components/admin/navbar";
-import { useEffect, useState,useRef  } from "react";
+import { useEffect, useState, useRef } from "react";
+import QuickDetail from "../components/quickDetail";
 import axios from "axios";
 export default function MenuAdminPage() {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const [stats, setStats] = useState([]);
   const [menu, setMenu] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [addCate, setaddCate] = useState([]);
   const [data, setData] = useState({
     name: "",
     tag: "",
@@ -35,37 +38,57 @@ export default function MenuAdminPage() {
     };
     fetData();
   }, []);
-  const handleActive = () => {
-    setActive(null);
+
+  const handleActive = (type) => {
+    setActive(type);
   };
-  const handleNulll = () => {
-    setActive(1);
+  const handleClose = () => {
+    setActive(null);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(data);
-    
-    axios.post("http://127.0.0.1:8000/api/insert-menu",data)
-    .then(res => {
-      console.log(data);
-      
-    }
-    )
-    .catch(e => console.log(e) 
-    )
+    axios
+      .post("http://127.0.0.1:8000/api/insert-menu", data)
+      .then((res) => {
+        alert("thêm thành công");
+      })
+      .catch((e) => console.log(e));
   };
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (file && file.size <= 2 * 1024 * 1024) {
-      setData({ ...data, image: file });
+      setData({ ...data, image: file.name });
     } else {
       alert("Vui lòng chọn ảnh dưới 2MB.");
     }
   };
+  const handldeDelete = (id) => {
+    e.preventDefault();
+    axios
+      .delete("http://127.0.0.1:8000/api/delete-category", id)
+      .then((res) => alert("xoá thành công"))
+      .catch((e) => console.log(e));
+  };
+
+  const handleOpenDetail = (id) => {
+    setSelectedId(id);
+    setActive("detail");
+  };
+  const handleCloseDetail = () => {
+    setActive(null);
+    setSelectedId(null);
+  };
+  const handleAddCate = () => {
+    axios
+      .post("http://127.0.0.1:8000/api/", addCate)
+      .then((res) => alert("thêm thành công"))
+      .catch((err) => alert("lỗi"));
+  };
+  const selectedItem = menu.find((item) => item.id === selectedId);
   return (
     <div className="min-h-screen bg-[#FFF9F0] flex">
       {/* Sidebar */}
-      <Sidebar items="reservation" />
+      <Sidebar items="menu" />
       {/* Main Content */}
       <div className="flex-1 overflow-auto ">
         {/* Top Navigation */}
@@ -87,7 +110,7 @@ export default function MenuAdminPage() {
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               <div className="flex flex-wrap gap-2">
                 <button
-                  onClick={handleActive}
+                  onClick={() => handleActive("food")}
                   className="flex items-center bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 px-4 rounded-md transition-colors"
                 >
                   <svg
@@ -106,7 +129,10 @@ export default function MenuAdminPage() {
                   </svg>
                   Thêm món mới
                 </button>
-                <button className="flex items-center bg-[#FFF9F0] hover:bg-[#FFF3E4] text-[#594545] py-2 px-4 rounded-md transition-colors">
+                <button
+                  className="flex items-center bg-[#FFF9F0] hover:bg-[#FFF3E4] text-[#594545] py-2 px-4 rounded-md transition-colors"
+                  onClick={() => handleActive("category")}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2 text-[#9E7676]"
@@ -401,6 +427,9 @@ export default function MenuAdminPage() {
                             </svg>
                           </button>
                           <button
+                            onClick={() => {
+                              handleOpenDetail(item.id);
+                            }}
                             className="p-1 text-green-600 hover:text-green-800"
                             title="Cập nhật trạng thái"
                           >
@@ -420,6 +449,7 @@ export default function MenuAdminPage() {
                             </svg>
                           </button>
                           <button
+                            onClick={handldeDelete}
                             className="p-1 text-red-600 hover:text-red-800"
                             title="Hủy đặt bàn"
                           >
@@ -448,188 +478,31 @@ export default function MenuAdminPage() {
           </div>
 
           {/* Menu Item Detail Modal (Hidden by default) */}
-          <div className="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
-              <div className="px-6 py-4 border-b border-[#E8D5C4] flex justify-between items-center sticky top-0 bg-white z-10">
-                <h2 className="text-lg font-semibold text-[#594545]">
-                  Chi tiết món ăn
-                </h2>
-                <button className="text-[#594545] hover:text-[#815B5B]">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                  <div className="md:col-span-1">
-                    <div className="bg-[#FFF9F0] p-4 rounded-md flex flex-col items-center">
-                      <img
-                        src="https://placehold.co/300x300/png?text=Salmon+Nigiri"
-                        alt="Nigiri Cá hồi"
-                        className="w-full h-auto rounded-md mb-4"
-                      />
-                      <div className="flex space-x-2 w-full">
-                        <button className="flex-1 bg-[#9E7676] hover:bg-[#815B5B] text-white py-2 rounded-md transition-colors text-sm">
-                          Thay đổi ảnh
-                        </button>
-                        <button className="flex-1 border border-[#9E7676] text-[#9E7676] hover:bg-[#FFF3E4] py-2 rounded-md transition-colors text-sm">
-                          Xóa ảnh
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Mã món
-                        </label>
-                        <input
-                          type="text"
-                          value="ITEM-001"
-                          readOnly
-                          className="w-full px-3 py-2 bg-gray-100 border border-[#E8D5C4] rounded-md text-[#594545]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Trạng thái
-                        </label>
-                        <select className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]">
-                          <option value="available">Có sẵn</option>
-                          <option value="unavailable">Hết hàng</option>
-                          <option value="suspended">Tạm ngưng</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Tên món (Tiếng Việt)
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue="Nigiri Cá hồi"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Tên món (Tiếng Nhật)
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue="サーモン握り"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Danh mục
-                        </label>
-                        <select className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]">
-                          <option value="sushi">Sushi</option>
-                          <option value="sashimi">Sashimi</option>
-                          <option value="rolls">Rolls</option>
-                          <option value="appetizers">Khai vị</option>
-                          <option value="rice-noodles">Mì & Cơm</option>
-                          <option value="drinks">Đồ uống</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Giá bán
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue="70.000 ₫"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Giá vốn
-                        </label>
-                        <input
-                          type="text"
-                          defaultValue="45.000 ₫"
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-[#594545] mb-1">
-                          Mô tả
-                        </label>
-                        <textarea
-                          defaultValue="Cá hồi tươi trên cơm sushi"
-                          rows={3}
-                          className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
-                        ></textarea>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="featured"
-                          defaultChecked={true}
-                          className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
-                        />
-                        <label
-                          htmlFor="featured"
-                          className="ml-2 text-sm text-[#594545]"
-                        >
-                          Món nổi bật
-                        </label>
-                      </div>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="popular"
-                          defaultChecked={true}
-                          className="h-4 w-4 text-[#9E7676] border-[#E8D5C4] rounded focus:ring-[#9E7676]"
-                        />
-                        <label
-                          htmlFor="popular"
-                          className="ml-2 text-sm text-[#594545]"
-                        >
-                          Món phổ biến
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end space-x-3">
-                  <button className="px-4 py-2 border border-[#9E7676] text-[#9E7676] rounded-md hover:bg-[#FFF3E4] transition-colors">
-                    Hủy
-                  </button>
-                  <button className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
-                    Lưu thay đổi
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <QuickDetail
+            isOpen={active === "detail"}
+            item={selectedItem}
+            onClose={handleCloseDetail}
+            cate={categories}
+          />
 
           {/* Category Management Modal (Hidden by default) */}
-          <div className="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div
+            className={`${
+              active === "category" ? "" : "hidden"
+            } fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center`}
+          >
             <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-auto">
               <div className="px-6 py-4 border-b border-[#E8D5C4] flex justify-between items-center sticky top-0 bg-white z-10">
                 <h2 className="text-lg font-semibold text-[#594545]">
                   Quản lý danh mục
                 </h2>
-                <button className="text-[#594545] hover:text-[#815B5B]">
+                <button
+                  className="text-[#594545] hover:text-[#815B5B]"
+                  onClick={handleClose}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
+                    a
                     className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -651,8 +524,12 @@ export default function MenuAdminPage() {
                       type="text"
                       placeholder="Tên danh mục mới"
                       className="flex-1 px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                      onChange={(e) => setaddCate(e.target.value)}
                     />
-                    <button className="bg-[#9E7676] hover:bg-[#815B5B] text-white px-4 py-2 rounded-md transition-colors">
+                    <button
+                      className="bg-[#9E7676] hover:bg-[#815B5B] text-white px-4 py-2 rounded-md transition-colors"
+                      onClick={handleAddCate}
+                    >
                       Thêm danh mục
                     </button>
                   </div>
@@ -693,7 +570,7 @@ export default function MenuAdminPage() {
                               />
                             </svg>
                           </button>
-                          <button className="p-1 text-red-600 hover:text-red-800">
+                          <button className="p-1 text-red-600 hover:text-red-800" onClick={()=> handldeDelete(category.id)}>
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-5 w-5"
@@ -714,12 +591,6 @@ export default function MenuAdminPage() {
                     ))}
                   </ul>
                 </div>
-
-                <div className="flex justify-end">
-                  <button className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
-                    Đóng
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -727,7 +598,7 @@ export default function MenuAdminPage() {
           {/* Add New Menu Item Modal (Hidden by default) */}
           <div
             className={`${
-              active === 1 ? "hidden" : ""
+              active === "food" ? "" : "hidden"
             } fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center`}
           >
             <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
@@ -736,7 +607,7 @@ export default function MenuAdminPage() {
                   Thêm món mới
                 </h2>
                 <button
-                  onClick={handleNulll}
+                  onClick={handleClose}
                   className="text-[#594545] hover:text-[#815B5B]"
                 >
                   <svg
@@ -850,7 +721,7 @@ export default function MenuAdminPage() {
                             }
                           >
                             <option value="">-- Chọn danh mục --</option>
-                            {categories.map((item) => (                              
+                            {categories.map((item) => (
                               <option value={item.id} key={item.id}>
                                 {item.name}
                               </option>

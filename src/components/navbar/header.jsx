@@ -28,7 +28,7 @@ export default function header() {
       </div>
       {user ? (
           <div className="flex items-center space-x-4">
-            <a href="/user"><span className="text-[#594545]">👋 Xin chào, {user[0].name}</span></a>
+            <a href="/user"><span className="text-[#594545]">👋 Xin chào, {user.name}</span></a>
             <button
               onClick={logout}
               className="bg-[#9E7676] hover:bg-[#B04242] text-white px-4 py-2 rounded-md"

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
 import Header from "../../components/navbar/header";
 import Footer from "../../components/navbar/footer";
 import { useNavigate } from "react-router-dom";
-
+import { AuthContext } from '../../context/authContext'
 import axios from "axios";
 export default function ReservationPage() {
+  const {user,logout} = useContext(AuthContext)
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -13,7 +14,9 @@ export default function ReservationPage() {
     reservation_date: "",
     reservation_time: "",
     note: "",
+    customer_id:""
   });
+  
   const [recomendTable, setRecomendTable] = useState([]);
   const navigate = useNavigate();
   const handleChange = (e) => {
@@ -22,13 +25,15 @@ export default function ReservationPage() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    const payload = user ? { ...data, customer_id: user.id } : data;
+    console.log(payload);
+    
     axios
-      .post("http://127.0.0.1:8000/api/reservation", data)
-      .then((res) => {
-        navigate("/");
-      })
-      .catch((e) => `Lỗi ${e}`);
+      .post("http://127.0.0.1:8000/api/reservation", payload)
+      .then(() => navigate("/"))
+      .catch((e) => console.error("Lỗi", e));
   };
+  
   useEffect(() => {
     if (data.guests && data.reservation_date) {
       axios

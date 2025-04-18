@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import Sidebar from "../components/admin/sidebar";
+import Navbar from "../components/admin/navbar";
 export default function ReservationsAdminPage() {
   // Mock reservation data
   // const reservations = [
@@ -177,202 +179,12 @@ export default function ReservationsAdminPage() {
   return (
     <div className="min-h-screen bg-[#FFF9F0] flex">
       {/* Sidebar */}
-      <div className="w-64 bg-[#594545] text-white fixed inset-y-0 left-0 z-30 transform transition duration-300 lg:translate-x-0 -translate-x-full lg:static lg:inset-0">
-        <div className="flex items-center justify-center h-16 border-b border-[#815B5B]">
-          <div className="flex items-center">
-            <h1 className="text-xl font-semibold">寿司匠</h1>
-            <span className="ml-2">Admin</span>
-          </div>
-        </div>
-        <nav className="mt-5 px-2">
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
-            </svg>
-            Tổng quan
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-              />
-            </svg>
-            Đơn hàng
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md bg-[#815B5B] text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Đặt bàn
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            Thực đơn
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-            Khách hàng
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            Nhân viên
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-            Báo cáo
-          </a>
-          <a
-            href="#"
-            className="group flex items-center px-2 py-2 mt-1 text-base font-medium rounded-md text-[#E8D5C4] hover:bg-[#815B5B] hover:text-white"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mr-4 h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            Cài đặt
-          </a>
-        </nav>
-        <div className="absolute bottom-0 w-full">
-          <div className="px-4 py-4 border-t border-[#815B5B]">
-            <div className="flex items-center">
-              <img
-                src="https://placehold.co/40x40/E8D5C4/594545?text=AD"
-                alt="Admin"
-                className="h-10 w-10 rounded-full"
-              />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-white">Admin Takumi</p>
-                <p className="text-xs text-[#E8D5C4]">Quản trị viên</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Sidebar  items="reservation"/>
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto ">
         {/* Top Navigation */}
-
+    <Navbar/>
         {/* Reservations Content */}
         <main className="p-6">
           <div className="mb-6">
@@ -787,6 +599,139 @@ export default function ReservationsAdminPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+            <div className=" hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-auto">
+              <div className="px-6 py-4 border-b border-[#E8D5C4] flex justify-between items-center sticky top-0 bg-white z-10">
+                <h2 className="text-lg font-semibold text-[#594545]">Chi tiết đặt bàn #RES-4567</h2>
+                <button className="text-[#594545] hover:text-[#815B5B]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <h3 className="text-md font-semibold text-[#594545] mb-3">Thông tin đặt bàn</h3>
+                    <div className="bg-[#FFF9F0] p-4 rounded-md">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="text-[#815B5B]">Mã đặt bàn:</div>
+                        <div className="text-[#594545] font-medium">RES-4567</div>
+                        <div className="text-[#815B5B]">Ngày đặt:</div>
+                        <div className="text-[#594545]">10/04/2024</div>
+                        <div className="text-[#815B5B]">Giờ đặt:</div>
+                        <div className="text-[#594545]">18:00</div>
+                        <div className="text-[#815B5B]">Số khách:</div>
+                        <div className="text-[#594545]">4 người</div>
+                        <div className="text-[#815B5B]">Bàn số:</div>
+                        <div className="text-[#594545]">T05</div>
+                        <div className="text-[#815B5B]">Trạng thái:</div>
+                        <div>
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Đã xác nhận
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-md font-semibold text-[#594545] mb-3">Thông tin khách hàng</h3>
+                    <div className="bg-[#FFF9F0] p-4 rounded-md">
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="text-[#815B5B]">Tên khách hàng:</div>
+                        <div className="text-[#594545] font-medium">Đỗ Văn F</div>
+                        <div className="text-[#815B5B]">Số điện thoại:</div>
+                        <div className="text-[#594545]">0912 345 678</div>
+                        <div className="text-[#815B5B]">Email:</div>
+                        <div className="text-[#594545]">dovanf@example.com</div>
+                        <div className="text-[#815B5B]">Yêu cầu đặc biệt:</div>
+                        <div className="text-[#594545]">Vị trí gần cửa sổ, có trẻ em</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-md font-semibold text-[#594545] mb-3">Cập nhật trạng thái</h3>
+                <div className="bg-[#FFF9F0] p-4 rounded-md mb-6">
+                  <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div className="flex-1">
+                      <label htmlFor="status" className="block text-sm font-medium text-[#594545] mb-1">
+                        Trạng thái
+                      </label>
+                      <select
+                        id="status"
+                        className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                      >
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="confirmed" selected>
+                          Đã xác nhận
+                        </option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="cancelled">Đã hủy</option>
+                      </select>
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="table" className="block text-sm font-medium text-[#594545] mb-1">
+                        Bàn số
+                      </label>
+                      <select
+                        id="table"
+                        className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                      >
+                        <option value="">Chọn bàn</option>
+                        <option value="T01">Bàn T01 (2 người)</option>
+                        <option value="T02">Bàn T02 (2 người)</option>
+                        <option value="T03">Bàn T03 (2 người)</option>
+                        <option value="T04">Bàn T04 (4 người)</option>
+                        <option value="T05" selected>
+                          Bàn T05 (4 người)
+                        </option>
+                        <option value="T06">Bàn T06 (4 người)</option>
+                        <option value="T07">Bàn T07 (6 người)</option>
+                        <option value="T08">Bàn T08 (6 người)</option>
+                        <option value="P01">Phòng P01 (8-10 người)</option>
+                        <option value="P02">Phòng P02 (8-10 người)</option>
+                      </select>
+                    </div>
+                    <div className="flex-none md:self-end">
+                      <button className="w-full md:w-auto px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
+                        Cập nhật
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <h3 className="text-md font-semibold text-[#594545] mb-3">Ghi chú nội bộ</h3>
+                <div className="bg-[#FFF9F0] p-4 rounded-md mb-6">
+                  <textarea
+                    className="w-full px-3 py-2 border border-[#E8D5C4] rounded-md focus:outline-none focus:ring-1 focus:ring-[#9E7676] focus:border-[#9E7676]"
+                    rows="3"
+                    placeholder="Thêm ghi chú nội bộ về đặt bàn này..."
+                  ></textarea>
+                  <div className="mt-2 text-right">
+                    <button className="px-4 py-1 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors text-sm">
+                      Lưu ghi chú
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex justify-end space-x-3">
+                  <button className="px-4 py-2 border border-[#9E7676] text-[#9E7676] rounded-md hover:bg-[#FFF3E4] transition-colors">
+                    Gửi email xác nhận
+                  </button>
+                  <button className="px-4 py-2 bg-[#9E7676] text-white rounded-md hover:bg-[#815B5B] transition-colors">
+                    Đóng
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </main>

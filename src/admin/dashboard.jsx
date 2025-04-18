@@ -23,10 +23,6 @@ export default function AdminDashboard() {
     { id: 3, name: "Đặt bàn hôm nay", value: "18", change: "+5%", trend: "up" },
     { id: 4, name: "Khách hàng mới", value: "6", change: "-2%", trend: "down" },
   ];
-
-
-
-
   const notifications = [
     {
       id: 1,
@@ -57,15 +53,28 @@ export default function AdminDashboard() {
       type: "info",
     },
   ];
+  const[tes,setTes] =useState([])
+  const[orderRecent,setOrderRencent] =useState([])
   const [reservations, setReservations] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/orders")
-      .then((res) => {
-        setReservations(res.data);
-      })
-      .catch((err) => console.log(err));
+    const fetData = async () => {
+      try {
+        const [order, reservation,tes] = await Promise.all([
+         axios.get("http://127.0.0.1:8000/api/orderRecent"),
+          axios.get("http://127.0.0.1:8000/api/orders"),
+          axios.get("http://127.0.0.1:8000/api/statsDashbroad"),
+        ]);
+        setOrderRencent(order.data);
+        setReservations(reservation.data);
+        setTes(tes.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetData()
   }, []);
+  console.log(tes);
+  
   return (
     <div className="min-h-screen bg-[#FFF9F0] flex">
       {/* Sidebar */}
@@ -145,39 +154,39 @@ export default function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-[#E8D5C4]">
-                      {reservations.map((reservation) => (
-                        <tr key={reservation.id} className="hover:bg-[#FFF9F0]">
+                      {orderRecent.map((order) => (
+                        <tr key={order.id} className="hover:bg-[#FFF9F0]">
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#594545] text-center">
-                            ORD-{reservation.id}
+                            ORD-{order.id}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#594545] text-center">
-                            {reservation.name}
+                            {order.name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#594545] text-center">
-                            {`${reservation.reservation_time} - ${dayjs(
-                              reservation.reservation_date
+                            {`${order.reservation_time} - ${dayjs(
+                              order.reservation_date
                             ).format("DD/MM/YYYY")}`}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-[#594545] text-center">
-                            {reservation.guests}
+                            {Number(order.total_price) || "-"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-center">
                             <span
                               className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                reservation.status === "pending"
+                                order.status === "pending"
                                   ? "bg-yellow-100 text-yellow-800"
-                                  : reservation.status === "confirmed"
+                                  : order.status === "confirmed"
                                   ? "bg-blue-100 text-blue-800"
-                                  : reservation.status === "checked_in"
+                                  : order.status === "checked_in"
                                   ? "bg-green-100 text-green-800"
-                                  : reservation.status === "completed"
+                                  : order.status === "completed"
                                   ? "bg-gray-100 text-gray-800"
-                                  : reservation.status === "cancelled"
+                                  : order.status === "cancelled"
                                   ? "bg-red-100 text-red-800"
                                   : ""
                               }`}
                             >
-                              {reservation.status}
+                              {order.status}
                             </span>
                           </td>
                         </tr>
